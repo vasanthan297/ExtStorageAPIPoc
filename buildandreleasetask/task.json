@@ -1,0 +1,40 @@
+{
+ "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+ "id": "44237565-6451-4fce-b089-7139395f94b9",
+ "name": "buildandreleasetask",
+ "friendlyName": "build and releasetask",
+ "description": "This is Test Learning Task ",
+ "helpMarkDown": "",
+ "category": "Utility",
+ "author": "Yogiram",
+ "version": {
+     "Major": 3,
+     "Minor": 6,
+     "Patch": 0
+ },
+ "instanceNameFormat": "Echo $(samplestring)",
+ "inputs": [
+     {
+         "name": "docId",
+         "type": "string",
+         "label": "docId",
+         "defaultValue": "",
+         "required": false,
+         "helpMarkDown": "A sample string"
+     },
+	 
+    {
+      "name": "NexusIQ",
+      "type": "connectedService:NexusIqServiceConnection",
+      "label": "NexusIQ Server Endpoint",
+      "required": false,
+      "helpMarkDown": "Select the NexusIQ server endpoint for your project. To create one, click the Manage link and create a new NexusIQ Server Endpoint, enter your server url and token."
+    }
+	 
+ ],
+ "execution": {
+     "Node": {
+         "target": "index.js"
+     }
+ }
+ }

@@ -1,0 +1,34 @@
+{
+    "manifestVersion": 1,
+    "id": "build-release-task",
+    "name": "vasanthan297 Build and Release Tools",
+    "version": "0.0.10",
+    "publisher": "vasanthan297",
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],    
+    "description": "Tools for building/releasing with vasanthan297. Includes one build/release task.",
+    "categories": [
+        "Azure Pipelines"
+    ],
+    "files": [
+        {
+            "path": "buildandreleasetask"
+        }
+    ],
+
+    "contributions": [
+        {
+            "id": "custom-build-release-task",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "buildandreleasetask"
+            }
+        }
+    ]
+}
