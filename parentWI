@@ -1,40 +1,40 @@
 const azdev = require('azure-devops-node-api');
 
-const orgUrl = 'https://dev.azure.com/YOUR_ORG_NAME';
-const pat = 'YOUR_PERSONAL_ACCESS_TOKEN';
-const project = 'YOUR_PROJECT_NAME';
-const workItemType = 'CustomTaskType'; // Replace with your custom work item type name
-const parentWorkItemId = 123; // Replace with the ID of the parent work item
+const orgUrl = 'https://dev.azure.com/your-organization-name';
+const token = 'YOUR-PERSONAL-ACCESS-TOKEN';
+const project = 'YourProjectName'; // Replace with your project name
+const parentWorkItemId = 123; // ID of the parent work item
+const childWorkItemId = 456; // ID of the child work item
 
-async function createWorkItemWithSdk() {
+const authHandler = azdev.getPersonalAccessTokenHandler(token);
+const connection = new azdev.WebApi(orgUrl, authHandler);
+
+async function linkWorkItems() {
   try {
-    const authHandler = azdev.getPersonalAccessTokenHandler(pat);
-    const connection = new azdev.WebApi(orgUrl, authHandler);
-
     const workItemTrackingApi = await connection.getWorkItemTrackingApi();
 
-    // Create a new work item
-    const newWorkItem = [
-      {
-        op: 'add',
-        path: '/fields/System.Title',
-        value: 'New Custom Task'
-      }
-      // Add more fields as needed
-    ];
-    const createdWorkItem = await workItemTrackingApi.createWorkItem(null, newWorkItem, project, workItemType);
-
-    // Link as a child to another work item
-    const link = {
+    // Get the existing work item to modify
+    const parentWorkItem = await workItemTrackingApi.getWorkItem(parentWorkItemId, null, null, azdev.WorkItemExpand.Relations);
+    
+    // Create the relation object
+    const relation = {
       rel: 'System.LinkTypes.Hierarchy-Reverse',
-      url: createdWorkItem.url
+      url: `${orgUrl}/${project}/_apis/wit/workItems/${childWorkItemId}`,
+      attributes: {
+        comment: 'Linking child work item',
+      },
     };
-    await workItemTrackingApi.createWorkItemRelation(link, project, parentWorkItemId);
 
-    console.log('Work item created and linked successfully.');
+    // Add the relation to the existing work item's relations
+    parentWorkItem.relations.push(relation);
+
+    // Update the parent work item with the new relation
+    await workItemTrackingApi.updateWorkItem(parentWorkItem, parentWorkItemId);
+
+    console.log('Work items linked successfully.');
   } catch (error) {
-    console.error('Error:', error.message);
+    console.error('Error linking work items:', error);
   }
 }
 
-createWorkItemWithSdk();
+linkWorkItems();
