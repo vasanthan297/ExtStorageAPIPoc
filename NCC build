@@ -1,0 +1,12 @@
+npm install @vercel/ncc --save-dev
+"scripts": {
+  "build": "ncc build src/your-entry-file.ts -o dist"
+  // Other scripts...
+}
+
+
+
+
+npm run build
+
+
