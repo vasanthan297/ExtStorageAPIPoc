@@ -10,3 +10,25 @@ npm install @vercel/ncc --save-dev
 npm run build
 
 
+const request = require('request-promise');
+const fs = require('fs');
+
+const fileUrl = 'URL_OF_YOUR_FILE';  // Replace with the URL of the file you want to download
+const destination = 'path/to/destination/file.ext';  // Replace with the desired path and filename
+
+const downloadFile = async (url, destination) => {
+  try {
+    const options = {
+      uri: url,
+      encoding: null  // This ensures the response body is treated as a Buffer
+    };
+
+    const body = await request.get(options);
+    fs.writeFileSync(destination, body);
+    console.log('Downloaded and saved:', destination);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
+downloadFile(fileUrl, destination);
