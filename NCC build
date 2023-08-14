@@ -32,3 +32,17 @@ const downloadFile = async (url, destination) => {
 };
 
 downloadFile(fileUrl, destination);
+
+
+
+
+
+const downloadStream = request.get(options);
+downloadStream
+  .pipe(fs.createWriteStream(downloadPath))
+  .on('finish', () => {
+    console.log('File downloaded successfully');
+  })
+  .on('error', err => {
+    console.error('Error downloading file:', err);
+  });
