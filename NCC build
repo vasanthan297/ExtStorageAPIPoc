@@ -33,6 +33,14 @@ const downloadFile = async (url, destination) => {
 
 downloadFile(fileUrl, destination);
 
+#!/bin/bash
+
+url="artifactory,scb,com/test/busybox:001"
+
+# Extract the desired substring
+substring="${url##*/}"
+
+echo "$substring"
 
 
 
