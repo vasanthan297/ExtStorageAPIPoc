@@ -1,3 +1,28 @@
+const vulnerabilitySections = vulnerabilities.map(vulnerability => {
+    // Define the condition you want to check
+    const condition = vulnerability.severity === 'High'; // Change this condition as needed
+
+    // Use a conditional statement to generate the section based on the condition
+    if (condition) {
+        return `
+            <div class="section">
+                <h2>${vulnerability.tool}</h2>
+                <div class="vulnerability severity-${vulnerability.severity.toLowerCase()}">
+                    <h3>${vulnerability.severity} Severity Vulnerability</h3>
+                </div>
+            </div>
+        `;
+    } else {
+        // Return an empty string if the condition is not met
+        return '';
+    }
+}).join('');
+
+
+
+
+
+
 <!-- template.ejs -->
 <!DOCTYPE html>
 <html>
