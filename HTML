@@ -1,16 +1,41 @@
-<!-- template.ejs -->
+const fs = require('fs');
+
+// Set your condition
+const condition = true; // Change this condition as needed
+
+// Create a function to generate the content based on the condition
+function generateContent() {
+    if (condition) {
+        return '<p>This content is displayed when the condition is true.</p>';
+    } else {
+        return '<p>This content is displayed when the condition is false.</p>';
+    }
+}
+
+// Generate the HTML content with the dynamically generated div
+const htmlContent = `
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Generate Div Example</title>
-  </head>
-  <body>
-    <div id="myDiv">
-      <% if (condition) { %>
-        <p>This is a dynamically generated div.</p>
-      <% } else { %>
-        <p>Another message when the condition is false.</p>
-      <% } %>
+<head>
+    <title>Dynamic HTML with Node.js</title>
+</head>
+<body>
+    <h1>Generated HTML File</h1>
+    <div id="dynamicDiv">
+        ${generateContent()}
     </div>
-  </body>
+</body>
 </html>
+`;
+
+// Specify the file path and name for the HTML file
+const filePath = 'generated.html';
+
+// Write the HTML content to the file
+fs.writeFile(filePath, htmlContent, (err) => {
+    if (err) {
+        console.error('Error creating HTML file:', err);
+    } else {
+        console.log(`HTML file "${filePath}" created successfully.`);
+    }
+});
