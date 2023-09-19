@@ -1,3 +1,70 @@
+
+
+
+
+const azdev = require('azure-devops-node-api');
+
+// Azure DevOps organization URL and Personal Access Token (PAT)
+const orgUrl = 'https://dev.azure.com/your-organization';
+const personalAccessToken = 'your-personal-access-token';
+
+// Project and Work Item ID
+const project = 'your-project';
+const workItemId = 123; // Replace with the actual work item ID
+
+// Initialize the connection
+const authHandler = azdev.getPersonalAccessTokenHandler(personalAccessToken);
+const connection = new azdev.WebApi(orgUrl, authHandler);
+
+// Function to attach a file to a work item
+async function attachFileToWorkItem() {
+  try {
+    // Get the Work Item Tracking API
+    const witApi = await connection.getWorkItemTrackingApi();
+
+    // Specify the file path you want to attach
+    const filePath = 'path/to/your/file.txt';
+
+    // Read the file contents
+    const fs = require('fs');
+    const fileContent = fs.readFileSync(filePath, 'utf8');
+
+    // Create an Attachment
+    const attachment = await witApi.createAttachment(project, fileContent);
+
+    // Get the Work Item
+    const workItem = await witApi.getWorkItem(workItemId);
+
+    // Add the attachment to the work item
+    workItem.fields['System.AttachedFiles'] = [
+      {
+        name: attachment.name,
+        referenceName: attachment.url,
+      },
+    ];
+
+    // Update the work item to include the attachment
+    await witApi.updateWorkItem(workItem, project, workItemId);
+
+    console.log(`File attached to work item ${workItemId}`);
+  } catch (error) {
+    console.error('Error attaching file:', error);
+  }
+}
+
+// Call the function to attach the file
+attachFileToWorkItem();
+
+
+
+
+
+
+
+
+
+
+
 const azdev = require("azure-devops-node-api");
 const fs = require("fs");
 
