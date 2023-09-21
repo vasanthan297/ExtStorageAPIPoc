@@ -1,0 +1,50 @@
+export interface ArtifactLocation {
+  uri: string;
+}
+
+export interface Region {
+  startLine: number;
+  startColumn: number;
+  endLine: number;
+  endColumn: number;
+}
+
+export interface PhysicalLocation {
+  artifactLocation: ArtifactLocation;
+  region: Region;
+}
+
+export interface Location {
+  physicalLocation: PhysicalLocation;
+}
+
+export interface Message {
+  text: string;
+}
+
+export interface Result {
+  message: Message;
+  ruleId: string;
+  level: string;
+  locations: Location[];
+}
+
+export interface Driver {
+  name: string;
+  version: string;
+}
+
+export interface Tool {
+  driver: Driver;
+}
+
+export interface Run {
+  tool: Tool;
+  results: Result[];
+}
+
+export interface SarifLog {
+  version: string;
+  $schema: string;
+  runs: Run[];
+}
