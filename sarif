@@ -1,0 +1,94 @@
+import * as fs from 'fs';
+import { Result, Run, SarifLog } from './sarif-types'; // Create sarif-types.ts with the SARIF schema
+
+// Define a function to generate a SARIF log with one result
+function generateSarif(): SarifLog {
+  const result: Result = {
+    message: {
+      text: 'This is a sample SARIF result.',
+    },
+    ruleId: 'my-rule-id',
+    level: 'warning',
+    locations: [
+      {
+        physicalLocation: {
+          artifactLocation: {
+            uri: 'file:///path/to/source/file.ts',
+          },
+          region: {
+            startLine: 10,
+            startColumn: 5,
+            endLine: 10,
+            endColumn: 15,
+          },
+        },
+      },
+    ],
+  };
+
+  const run: Run = {
+    tool: {
+      driver: {
+        name: 'MyStaticAnalyzer',
+        version: '1.0.0',
+      },
+    },
+    results: [result],
+  };
+
+  const sarifLog: SarifLog = {
+    version: '2.1.0',
+    $schema: 'https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json',
+    runs: [run],
+  };
+
+  return sarifLog;
+}
+
+// Generate the SARIF log
+const sarifLog = generateSarif();
+
+function addResultToSarif(sarifLog: SarifLog, newResult: Result): void {
+  if (sarifLog.runs.length > 0) {
+    // Assuming you want to add the result to the first run (you can modify this as needed)
+    sarifLog.runs[0].results.push(newResult);
+  }
+}
+
+
+const newResult: Result = {
+  message: {
+    text: 'This is another sample SARIF result.',
+  },
+  ruleId: 'another-rule-id',
+  level: 'error', // Set the appropriate level
+  locations: [
+    {
+      physicalLocation: {
+        artifactLocation: {
+          uri: 'file:///path/to/another/source/file.ts',
+        },
+        region: {
+          startLine: 20, // Adjust line and column numbers
+          startColumn: 8,
+          endLine: 20,
+          endColumn: 18,
+        },
+      },
+    },
+  ],
+};
+
+
+addResultToSarif(sarifLog, newResult);
+
+
+
+
+// Convert SARIF object to a JSON string
+const sarifJson = JSON.stringify(sarifLog, null, 2);
+
+// Save the SARIF JSON to a file
+fs.writeFileSync('sample.sarif', sarifJson, 'utf-8');
+
+console.log('SARIF file generated: sample.sarif');
