@@ -1,4 +1,4 @@
-const azdev = require('azure-devops-node-api');
+import * as azdev from 'azure-devops-node-api';
 
 const personalAccessToken = 'YOUR_PAT';
 const organizationUrl = 'https://dev.azure.com/YOUR_ORG';
@@ -10,34 +10,45 @@ const fileName = 'YOUR_ATTACHMENT_FILENAME';
 const authHandler = azdev.getPersonalAccessTokenHandler(personalAccessToken);
 const connection = new azdev.WebApi(organizationUrl, authHandler);
 
-const workItemTrackingApi = await connection.getWorkItemTrackingApi();
+async function addOrReplaceAttachment() {
+  try {
+    const workItemTrackingApi = await connection.getWorkItemTrackingApi();
 
-// Get the current work item details
-const workItem = await workItemTrackingApi.getWorkItem(workItemId, null, null, azdev.WorkItemExpand.Relations);
+    // Get the current work item details
+    const workItem = await workItemTrackingApi.getWorkItem(workItemId, null, null, azdev.WorkItemExpand.Relations);
 
-// Check if an attachment with the same name exists
-const attachmentName = `AttachedFile:${fileName}`;
-const existingAttachment = workItem.relations.find(relation => relation.attributes.comment === attachmentName);
+    // Check if an attachment with the same name exists
+    const attachmentName = `AttachedFile:${fileName}`;
+    const existingAttachment = workItem.relations.find(
+      (relation: azdev.WorkItemRelation) => relation.attributes.comment === attachmentName
+    );
 
-if (existingAttachment) {
-  // If an attachment with the same name exists, replace it with the new attachment
-  existingAttachment.url = attachmentUrl;
-} else {
-  // If no attachment with the same name exists, add a new attachment
-  workItem.relations.push({
-    rel: 'AttachedFile',
-    url: attachmentUrl,
-    attributes: {
-      comment: attachmentName,
-    },
-  });
+    if (existingAttachment) {
+      // If an attachment with the same name exists, replace it with the new attachment
+      existingAttachment.url = attachmentUrl;
+    } else {
+      // If no attachment with the same name exists, add a new attachment
+      const newAttachment: azdev.WorkItemRelation = {
+        rel: 'AttachedFile',
+        url: attachmentUrl,
+        attributes: {
+          comment: attachmentName,
+        },
+      };
+      workItem.relations.push(newAttachment);
+    }
+
+    // Update the work item to save the changes to the relations
+    await workItemTrackingApi.updateWorkItem(
+      [{ op: 'replace', path: '/relations', value: workItem.relations }],
+      workItemId,
+      project
+    );
+
+    console.log(`Attachment added or replaced in work item ${workItemId}`);
+  } catch (error) {
+    console.error('Error:', error);
+  }
 }
 
-// Update the work item to save the changes to the relations
-await workItemTrackingApi.updateWorkItem(
-  [{ op: 'replace', path: '/relations', value: workItem.relations }],
-  workItemId,
-  project
-);
-
-console.log(`Attachment added or replaced in work item ${workItemId}`);
+addOrReplaceAttachment();
