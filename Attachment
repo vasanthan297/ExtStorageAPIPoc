@@ -1,4 +1,4 @@
-const azdev = require('azure-devops-node-api');
+import * as azdev from 'azure-devops-node-api';
 
 // Replace with your Azure DevOps organization URL and PAT token
 const orgUrl = 'https://dev.azure.com/YourOrganization';
@@ -19,7 +19,7 @@ async function deleteAttachment() {
     const workItem = await workItemTrackingApi.getWorkItem(workItemId, [], projectId);
 
     // Find the index of the attachment by comparing the file name
-    const attachmentIndexToDelete = workItem.relations.findIndex((relation) =>
+    const attachmentIndexToDelete = workItem.relations.findIndex((relation: any) =>
       relation.attributes && relation.attributes.name === attachmentFileNameToDelete
     );
 
@@ -27,8 +27,17 @@ async function deleteAttachment() {
       // Remove the attachment from the "relations" collection
       workItem.relations.splice(attachmentIndexToDelete, 1);
 
+      // Create a JsonPatchDocument to update the work item
+      const patchDocument = [
+        {
+          op: 'replace',
+          path: '/relations',
+          value: workItem.relations,
+        },
+      ];
+
       // Update the work item to save the changes
-      await workItemTrackingApi.updateWorkItems([workItem], projectId);
+      await workItemTrackingApi.updateWorkItem({}, patchDocument, workItemId, projectId);
       console.log(`Attachment "${attachmentFileNameToDelete}" deleted successfully.`);
     } else {
       console.error(`Attachment "${attachmentFileNameToDelete}" not found.`);
