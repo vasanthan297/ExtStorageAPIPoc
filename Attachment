@@ -7,248 +7,35 @@ const patToken = 'YourPersonalAccessToken';
 const projectId = 'YourProjectId'; // Replace with your project ID
 const workItemId = 123; // Replace with the ID of the work item you want to update
 
-async function removeAttachmentByURL(attachmentUrl) {
+const attachmentFileNameToDelete = 'example.txt'; // Replace with the file name of the attachment to delete
+
+async function deleteAttachment() {
   try {
     // Connect to Azure DevOps
     const connection = new azdev.WebApi(orgUrl, azdev.getPersonalAccessTokenHandler(patToken));
     const workItemTrackingApi = await connection.getWorkItemTrackingApi();
 
-    // Create a patch document to remove the attachment by URL
-    const patchDocument = [
-      {
-        op: 'remove',
-        path: `/relations?url=${encodeURIComponent(attachmentUrl)}`,
-      },
-    ];
+    // Get the work item
+    const workItem = await workItemTrackingApi.getWorkItem(workItemId, [], projectId);
 
-    // Apply the patch document to delete the attachment
-    await workItemTrackingApi.updateWorkItem([], patchDocument, projectId, workItemId);
+    // Find the index of the attachment by comparing the file name
+    const attachmentIndexToDelete = workItem.relations.findIndex((relation) =>
+      relation.attributes && relation.attributes.name === attachmentFileNameToDelete
+    );
 
-    console.log(`Attachment with URL "${attachmentUrl}" removed successfully.`);
+    if (attachmentIndexToDelete !== -1) {
+      // Remove the attachment from the "relations" collection
+      workItem.relations.splice(attachmentIndexToDelete, 1);
+
+      // Update the work item to save the changes
+      await workItemTrackingApi.updateWorkItems([workItem], projectId);
+      console.log(`Attachment "${attachmentFileNameToDelete}" deleted successfully.`);
+    } else {
+      console.error(`Attachment "${attachmentFileNameToDelete}" not found.`);
+    }
   } catch (error) {
     console.error('Error:', error);
   }
 }
 
-// Specify the URL of the attachment you want to remove
-const attachmentUrlToRemove = 'https://dev.azure.com/YourOrganization/project/_apis/wit/attachments/attachmentId';
-
-removeAttachmentByURL(attachmentUrlToRemove);
-
-
-
-
-
-
-
-
-
-
-const azdev = require('azure-devops-node-api');
-
-// Azure DevOps organization URL and Personal Access Token (PAT)
-const orgUrl = 'https://dev.azure.com/your-organization';
-const personalAccessToken = 'your-personal-access-token';
-
-// Project and Work Item ID
-const project = 'your-project';
-const workItemId = 123; // Replace with the actual work item ID
-
-// Initialize the connection
-const authHandler = azdev.getPersonalAccessTokenHandler(personalAccessToken);
-const connection = new azdev.WebApi(orgUrl, authHandler);
-
-// Function to attach a file to a work item
-async function attachFileToWorkItem() {
-  try {
-    // Get the Work Item Tracking API
-    const witApi = await connection.getWorkItemTrackingApi();
-
-    // Specify the file path you want to attach
-    const filePath = 'path/to/your/file.txt';
-
-    // Read the file contents
-    const fs = require('fs');
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-
-    // Create an Attachment
-    const attachment = await witApi.createAttachment(project, fileContent);
-
-    // Get the Work Item
-    const workItem = await witApi.getWorkItem(workItemId);
-
-    // Add the attachment to the work item
-    workItem.fields['System.AttachedFiles'] = [
-      {
-        name: attachment.name,
-        referenceName: attachment.url,
-      },
-    ];
-
-    // Update the work item to include the attachment
-    await witApi.updateWorkItem(workItem, project, workItemId);
-
-    console.log(`File attached to work item ${workItemId}`);
-  } catch (error) {
-    console.error('Error attaching file:', error);
-  }
-}
-
-// Call the function to attach the file
-attachFileToWorkItem();
-
-
-
-
-
-
-
-
-
-
-
-const azdev = require("azure-devops-node-api");
-const fs = require("fs");
-
-const orgUrl = "https://dev.azure.com/your-organization"; // Replace with your organization URL
-const token = "YOUR_PERSONAL_ACCESS_TOKEN"; // Replace with your PAT
-const authHandler = azdev.getPersonalAccessTokenHandler(token);
-const connection = new azdev.WebApi(orgUrl, authHandler);
-
-async function uploadAndAssociateFileWithWorkItem() {
-  const witApi = await connection.getWorkItemTrackingApi();
-
-  // Specify the file path and name you want to attach
-  const filePath = "path/to/your/file.txt";
-  const fileName = "file.txt";
-
-  // Read the file and create a readable stream
-  const fileStream = fs.createReadStream(filePath);
-
-  // Upload the file as an attachment
-  const attachment = await witApi.createAttachment(
-    {},
-    fileStream,
-    fileName
-  );
-
-  // Get the attachment's URL
-  const attachmentUrl = attachment.url;
-
-  // Specify the work item ID you want to associate the attachment with
-  const workItemId = 123; // Replace with your work item ID
-
-  // Create a JSON patch document for updating the work item
-  const patchDocument = [
-    {
-      op: "add",
-      path: "/relations/-",
-      value: {
-        rel: "AttachedFile",
-        url: attachmentUrl,
-        attributes: {
-          comment: `Comments for the file ${fileName}`,
-        },
-      },
-    },
-  ];
-
-  // Update the work item to associate the attachment
-  const updatedWorkItem = await witApi.updateWorkItem(
-    patchDocument,
-    workItemId
-  );
-
-  console.log(`Attachment uploaded and associated with work item ${workItemId}.`);
-}
-
-uploadAndAssociateFileWithWorkItem().catch((error) => {
-  console.error("Error:", error);
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=========================================================================================================================================================
-
-const azdev = require("azure-devops-node-api");
-const fs = require("fs");
-
-// Azure DevOps Organization URL and Personal Access Token (PAT)
-const orgUrl = "https://dev.azure.com/YourOrganization";
-const pat = "YourPersonalAccessToken";
-
-// HTML Report File Path
-const htmlReportFilePath = "path/to/your/report.html";
-
-// Work Item ID where you want to attach the HTML report
-const workItemId = 123; // Replace with your work item ID
-
-async function uploadHtmlReport() {
-  try {
-    // Create a connection to Azure DevOps
-    const connection = new azdev.WebApi(orgUrl, azdev.getPersonalAccessTokenHandler(pat));
-
-    // Get the Work Item Tracking API
-    const witApi = await connection.getWorkItemTrackingApi();
-
-    // Read the HTML report file
-    const htmlReportData = fs.readFileSync(htmlReportFilePath, "utf8");
-
-    // Create an attachment data object
-    const attachmentData = {
-      fileName: "report.html",
-      fileStream: htmlReportData,
-    };
-
-    // Upload the attachment
-    const attachment = await witApi.createAttachmentV2(attachmentData);
-
-    // Create a Work Item Update to link the attachment
-    const update = [
-      {
-        op: "add",
-        path: "/relations/-",
-        value: {
-          rel: "AttachedFile",
-          url: attachment.url,
-          attributes: {
-            comment: "HTML Report",
-          },
-        },
-      },
-    ];
-
-    // Update the Work Item with the attachment link
-    await witApi.updateWorkItems(update, workItemId);
-
-    console.log("HTML report uploaded and linked to the work item.");
-  } catch (error) {
-    console.error("Error uploading HTML report:", error);
-  }
-}
-
-// Call the function to upload the HTML report
-uploadHtmlReport();
+deleteAttachment();
