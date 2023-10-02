@@ -1,0 +1,19 @@
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      name: YourSelfHostedAgentName # Specify your self-hosted agent's name
+    steps:
+    - powershell: |
+        # Set the desired JDK version as an environment variable
+        # Replace 'JDK11_HOME' with the desired variable name
+        # Replace 'C:\Path\To\Your\JDK11' with the actual path to JDK 11
+        $env:JDK11_HOME = 'C:\Path\To\Your\JDK11'
+        Write-Host "JDK 11 is set to $($env:JDK11_HOME)"
+      displayName: 'Set JDK 11 Environment Variable'
+    - script: |
+        # Use the environment variable in your build
+        echo "Using JDK 11 from $JDK11_HOME"
+        # Add your build steps that require JDK 11 here
+      displayName: 'Build Java Application with JDK 11'
