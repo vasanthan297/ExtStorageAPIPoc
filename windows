@@ -17,3 +17,32 @@ stages:
         echo "Using JDK 11 from $JDK11_HOME"
         # Add your build steps that require JDK 11 here
       displayName: 'Build Java Application with JDK 11'
+
+
+
+
+
+
+trigger:
+- your_trigger
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- powershell: |
+    # Define the directory you want to append to PATH
+    $javaPath = "C:\path\to\java\bin"
+
+    # Append the directory to PATH
+    $currentPath = [System.Environment]::GetEnvironmentVariable("PATH", [System.EnvironmentVariableTarget]::Machine)
+    $newPath = "$currentPath;$javaPath"
+    [System.Environment]::SetEnvironmentVariable("PATH", $newPath, [System.EnvironmentVariableTarget]::Machine)
+
+    # Optionally, display the updated PATH for verification
+    Write-Host "Updated PATH: $($env:PATH)"
+  displayName: 'Append Java to PATH'
+
+- script: |
+    # Run your Java application or build commands here
+  displayName: 'Run Java Application'
