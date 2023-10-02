@@ -6,6 +6,34 @@ pool:
 
 steps:
 - powershell: |
+    # Set Java memory configurations and other options in _JAVA_OPTIONS
+    $maxHeapSize = "512m"  # Maximum heap size
+    $initialHeapSize = "256m"  # Initial heap size
+    $otherOptions = "-Dmy.property=value"  # Other Java options
+
+    $env:_JAVA_OPTIONS = "-Xmx$maxHeapSize -Xms$initialHeapSize $otherOptions"
+
+    # Optionally, display _JAVA_OPTIONS for verification
+    Write-Host "_JAVA_OPTIONS: $($env:_JAVA_OPTIONS)"
+  displayName: 'Set Java Memory Configurations'
+
+- script: |
+    # Run your Java application or build commands here
+  displayName: 'Run Java Application'
+
+
+
+
+
+
+trigger:
+- your_trigger
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- powershell: |
     # Set SSL trust store properties in _JAVA_OPTIONS
     $trustStorePath = "C:\path\to\your\truststore.jks"
     $trustStorePassword = "yourTruststorePassword"
