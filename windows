@@ -1,4 +1,12 @@
 - script: |
+    # Get image size in bytes
+    imageSize=$(docker inspect --format='{{.Size}}' your_image_name:your_image_tag)
+    
+    echo "Image Size (bytes): $imageSize"
+  displayName: 'Get Docker Image Size'
+
+
+- script: |
     # List Docker images and extract the size
     imageSize=$(docker images --format "{{.Size}}" your_image_name:your_image_tag)
     
