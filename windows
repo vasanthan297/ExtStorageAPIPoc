@@ -1,3 +1,13 @@
+- script: |
+    # List Docker images and extract the size
+    imageSize=$(docker images --format "{{.Size}}" your_image_name:your_image_tag)
+    
+    echo "Image Size: $imageSize"
+  displayName: 'Get Docker Image Size'
+
+
+
+
 trigger:
 - your_trigger
 
