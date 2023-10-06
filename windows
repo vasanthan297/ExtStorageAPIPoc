@@ -1,3 +1,6 @@
+Dsonar.findbugs.timeout=1800
+
+
 - script: |
     # Get image size in bytes
     imageSize=$(docker inspect --format='{{.Size}}' your_image_name:your_image_tag)
