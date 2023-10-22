@@ -1,0 +1,54 @@
+- task: SonarSource.sonarqube.15b84ca1-62a9-4aa0-b3a5-85b53f6e4372.SonarQubePrepare@4
+  inputs:
+    SonarQube: 'YourSonarQubeServiceEndpoint'
+    scannerMode: 'MSBuild'
+    projectKey: 'YourProjectKey'
+    projectName: 'YourProjectName'
+    projectVersion: '1.0'
+    sonar.cs.msbuild.slnFile: 'src/MySolution.sln' # Specify the path to your solution file
+
+
+
+trigger:
+- '*'
+
+pr:
+- '*'
+
+pool:
+  vmImage: 'windows-latest'
+
+steps:
+- task: UseDotNet@2
+  inputs:
+    packageType: 'sdk'
+    installationPath: $(Agent.ToolsDirectory)/dotnet
+    installationVersion: '6.x'
+
+- script: dotnet --version
+  displayName: 'Show dotnet version'
+
+- script: dotnet build
+  displayName: 'Build'
+
+- script: dotnet test
+  displayName: 'Test'
+
+- task: SonarSource.sonarqube.15b84ca1-62a9-4aa0-b3a5-85b53f6e4372.SonarQubePrepare@4
+  inputs:
+    SonarQube: 'YourSonarQubeServiceEndpoint'  # Replace with your SonarQube service connection name
+    scannerMode: 'MSBuild'
+    projectKey: 'YourProjectKey'  # Replace with your project's key in SonarQube
+    projectName: 'YourProjectName'  # Replace with your project's name in SonarQube
+    projectVersion: '1.0'
+    extraProperties: |
+      sonar.cs.msbuild.testProjectPattern=**\*Test*.csproj
+      sonar.cs.vscoveragexml.reportsPaths=**\coverage.cobertura.xml
+
+- task: SonarSource.sonarqube.33e4b2cf-7e2c-4a12-9a6e-427c7992682e.SonarQubeAnalyze@4
+
+- task: SonarSource.sonarqube.4b0f0a3c-0b3a-4a5a-80b6-748ac8ab54b6.SonarQubePublish@4
+  inputs:
+    pollingTimeoutSec: '300'
+
+- task: SonarSource.sonarqube.64b04b43-20f2-460d-a53b-6c43d0b0bde9.SonarQubePublishSummary@4
