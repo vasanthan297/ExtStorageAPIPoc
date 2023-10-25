@@ -1,131 +1,38 @@
-https://github.com/yesolm/azure-devops-cust-nuget-packer
-
 trigger:
-- '*'
-
-pr:
-- '*'
-
-pool:
-  vmImage: 'windows-latest'
-
-variables:
-  buildConfiguration: 'Release'
-  solution: '**/*.sln'
-  sonarqubeScannerVersion: '4.6.2'
-
-steps:
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    version: '3.x'
-    installationPath: $(Agent.ToolsDirectory)/dotnet
-
-- script: dotnet restore
-  displayName: 'Restore dependencies'
-
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'Build solution'
-
-- task: SonarQubePrepare@4
-  inputs:
-    SonarQube: '<YOUR_SONARQUBE_ENDPOINT>'
-    scannerMode: 'MSBuild'
-    projectKey: '<YOUR_PROJECT_KEY>'
-    projectName: '<YOUR_PROJECT_NAME>'
-    projectVersion: '$(Build.BuildNumber)'
-    extraProperties: |
-      sonar.cs.msbuild.sln=$(solution)
-      sonar.cs.vstest.reportsPaths=**/TestResults/*.trx
-  displayName: 'Prepare analysis'
-
-- script: dotnet test --configuration $(buildConfiguration)
-  displayName: 'Run tests'
-
-- task: SonarQubeAnalyze@4
-  displayName: 'Run SonarQube analysis'
-
-- task: SonarQubePublish@4
-  inputs:
-    pollingTimeoutSec: '300'
-  displayName: 'Publish SonarQube results'
-
-- task: SonarQubePublish@4
-  inputs:
-    pollingTimeoutSec: '300'
-  condition: succeededOrFailed()
-  displayName: 'Publish SonarQube results (conditionally)'
-
-- script: dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
-  displayName: 'Publish artifacts'
-
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish build artifacts'
-  inputs:
-    pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    artifactName: 'drop'
-
-
-
-
-
-
-
-
-
-
-
-- task: SonarSource.sonarqube.15b84ca1-62a9-4aa0-b3a5-85b53f6e4372.SonarQubePrepare@4
-  inputs:
-    SonarQube: 'YourSonarQubeServiceEndpoint'
-    scannerMode: 'MSBuild'
-    projectKey: 'YourProjectKey'
-    projectName: 'YourProjectName'
-    projectVersion: '1.0'
-    sonar.cs.msbuild.slnFile: 'src/MySolution.sln' # Specify the path to your solution file
-
-
-
-trigger:
-- '*'
-
-pr:
-- '*'
+  - main
 
 pool:
   vmImage: 'windows-latest'
 
 steps:
-- task: UseDotNet@2
-  inputs:
-    packageType: 'sdk'
-    installationPath: $(Agent.ToolsDirectory)/dotnet
-    installationVersion: '6.x'
+  - task: UseJavaVersion@0
+    inputs:
+      version: '8'  # Use the appropriate Java version here
 
-- script: dotnet --version
-  displayName: 'Show dotnet version'
+  - task: SonarQubePrepare@4
+    inputs:
+      SonarQube: 'SonarQube'  # Name of the SonarQube service connection in Azure DevOps
+      scannerMode: 'MSBuild'
+      projectKey: 'YourProjectKey'
+      projectName: 'YourProjectName'
+      projectVersion: '$(Build.BuildNumber)'
+      extraProperties: |
+        sonar.java.binaries=$(build.sourcesDirectory)/path/to/compiled/code
+        sonar.java.test.binaries=$(build.sourcesDirectory)/path/to/compiled/tests
+        sonar.java.libraryPaths=$(build.sourcesDirectory)/path/to/libraries
+        sonar.java.test.libraries=$(build.sourcesDirectory)/path/to/test/libraries
+        sonar.java.source=1.8  # Java version
+        sonar.ssl.clientAuth=true
+        sonar.ssl.clientCert.passphrase=your_certificate_password
+        sonar.ssl.clientCert.path=$(Agent.TempDirectory)/your_cert.jks  # Path to the JKS certificate
+    env:
+      SONARQUBE_SCANNER_PARAMS: $(extraProperties)
 
-- script: dotnet build
-  displayName: 'Build'
+  - script: 'msbuild /t:Rebuild'
+    workingDirectory: '$(build.sourcesDirectory)'
 
-- script: dotnet test
-  displayName: 'Test'
+  - task: SonarQubeAnalyze@4
 
-- task: SonarSource.sonarqube.15b84ca1-62a9-4aa0-b3a5-85b53f6e4372.SonarQubePrepare@4
-  inputs:
-    SonarQube: 'YourSonarQubeServiceEndpoint'  # Replace with your SonarQube service connection name
-    scannerMode: 'MSBuild'
-    projectKey: 'YourProjectKey'  # Replace with your project's key in SonarQube
-    projectName: 'YourProjectName'  # Replace with your project's name in SonarQube
-    projectVersion: '1.0'
-    extraProperties: |
-      sonar.cs.msbuild.testProjectPattern=**\*Test*.csproj
-      sonar.cs.vscoveragexml.reportsPaths=**\coverage.cobertura.xml
-
-- task: SonarSource.sonarqube.33e4b2cf-7e2c-4a12-9a6e-427c7992682e.SonarQubeAnalyze@4
-
-- task: SonarSource.sonarqube.4b0f0a3c-0b3a-4a5a-80b6-748ac8ab54b6.SonarQubePublish@4
-  inputs:
-    pollingTimeoutSec: '300'
-
-- task: SonarSource.sonarqube.64b04b43-20f2-460d-a53b-6c43d0b0bde9.SonarQubePublishSummary@4
+  - task: SonarQubePublish@4
+    inputs:
+      pollingTimeoutSec: '300'
