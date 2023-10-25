@@ -25,6 +25,7 @@ steps:
         sonar.ssl.clientAuth=true
         sonar.ssl.clientCert.passphrase=your_certificate_password
         sonar.ssl.clientCert.path=$(Agent.TempDirectory)/your_cert.jks  # Path to the JKS certificate
+        sonar.web.ssl.clientAuth: false
     env:
       SONARQUBE_SCANNER_PARAMS: $(extraProperties)
 
