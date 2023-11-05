@@ -1,0 +1,18 @@
+- task: SonarQubePrepare@4
+  inputs:
+    SonarQube: 'YourSonarQubeServiceConnection'
+    scannerMode: 'CLI'
+    configMode: 'manual'
+    extraProperties: |
+      # Path to the AAB file
+      sonar.androidLint.aabPath=$(Build.ArtifactStagingDirectory)/path-to-your-aab/app-release.aab
+
+      # Specify the path to your Android source code
+      sonar.sources=app/src/main
+
+      # Exclude test code and build artifacts
+      sonar.tests=app/src/test
+      sonar.exclusions=**/test/**, **/build/**
+
+      # Define the language (Java/Kotlin)
+      sonar.language=java
