@@ -1,5 +1,8 @@
+
+
 https://github.com/ajitsing/ExpenseManager
 
+find /path/to -type f -path '*/temp/*.app' -delete
 
 
 find /path/to/**/temp -type f -name '*.app' -exec rm {} \;
