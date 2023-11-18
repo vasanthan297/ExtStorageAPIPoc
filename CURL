@@ -1,0 +1,13 @@
+const { exec } = require('child_process');
+
+const curlCommand = 'curl https://www.example.com';
+
+exec(curlCommand, (error, stdout, stderr) => {
+  if (error) {
+    console.error(`Error executing curl command: ${error}`);
+    return;
+  }
+
+  console.log('stdout:', stdout);
+  console.error('stderr:', stderr);
+});
