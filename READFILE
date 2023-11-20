@@ -1,0 +1,18 @@
+const fs = require('fs');
+
+// Specify the path to your text file
+const filePath = 'path/to/your/file.txt';
+
+// Read the file asynchronously
+fs.readFile(filePath, 'utf8', (err, data) => {
+  if (err) {
+    console.error('Error reading the file:', err);
+    return;
+  }
+
+  // Process the content of the file
+  const ids = data.split('\n').map(id => id.trim());
+
+  // Now 'ids' is an array containing the list of IDs from the file
+  console.log(ids);
+});
