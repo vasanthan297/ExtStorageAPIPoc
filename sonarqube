@@ -37,3 +37,12 @@ steps:
   - task: SonarQubePublish@4
     inputs:
       pollingTimeoutSec: '300'
+
+
+
+
+
+
+https://lakshaykaushik2506.medium.com/rendering-code-coverage-report-on-sonarqube-and-azure-devops-4942ece4dda6
+
+
