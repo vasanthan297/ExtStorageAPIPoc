@@ -46,3 +46,8 @@ https://www.mattgerega.com/2023/01/04/publishing-code-coverage-in-both-azure-dev
 https://lakshaykaushik2506.medium.com/rendering-code-coverage-report-on-sonarqube-and-azure-devops-4942ece4dda6
 
 
+
+set -o pipefail && xcodebuild test -workspace YourWorkspace.xcworkspace -scheme YourScheme -destination 'platform=iOS Simulator,name=iPhone 12' -enableCodeCoverage YES | xcpretty -r junit --output test-reports/junit.xml
+
+
+
