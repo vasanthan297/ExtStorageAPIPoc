@@ -1,1 +1,28 @@
 https://manoyahavan.medium.com/sonarqube-integration-in-ios-swift-objective-c-developer-edition-9fa5d4bf4e37
+
+
+- script: |
+    curl -L -o build-wrapper-macosx-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-macosx-x86.zip
+    unzip build-wrapper-macosx-x86.zip
+    chmod +x build-wrapper-macosx-x86/build-wrapper-macosx-x86
+  displayName: 'Install Build Wrapper'
+
+
+
+
+- script: |
+    ./build-wrapper-macosx-x86/build-wrapper-macosx-x86 --out-dir bw-output xcodebuild -project YourProject.xcodeproj -scheme YourScheme clean build
+  displayName: 'Run Build Wrapper'
+
+
+- task: SonarQubePrepare@4
+  inputs:
+    SonarQube: 'YourSonarQubeServiceConnection' # Reference to your SonarQube service connection in Azure DevOps
+    scannerMode: 'Other'
+    extraProperties: |
+      sonar.cfamily.build-wrapper-output=bw-output
+  displayName: 'Prepare SonarQube Analysis'
+
+
+- task: SonarQubeAnalyze@4
+  displayName: 'Run SonarQube Scanner'
