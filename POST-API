@@ -1,0 +1,31 @@
+const request = require('request');
+const fs = require('fs');
+
+const apiUrl = 'https://example.com/api/endpoint'; // Replace with your API endpoint
+const apiKey = 'your-api-key'; // Replace with your actual API key
+const jsonFilePath = 'path/to/your/data.json'; // Replace with the path to your JSON file
+
+// Read data from the JSON file
+const postData = JSON.parse(fs.readFileSync(jsonFilePath, 'utf-8'));
+
+// Configure the request options
+const requestOptions = {
+  url: apiUrl,
+  method: 'POST',
+  json: true,
+  body: postData,
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${apiKey}`,
+  },
+};
+
+// Make the POST request
+request(requestOptions, (error, response, body) => {
+  if (error) {
+    console.error('Error:', error);
+  } else {
+    // Handle the response
+    console.log('Response:', body);
+  }
+});
