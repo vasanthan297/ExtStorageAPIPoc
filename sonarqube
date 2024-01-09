@@ -51,3 +51,27 @@ set -o pipefail && xcodebuild test -workspace YourWorkspace.xcworkspace -scheme 
 
 
 
+
+
+
+
+DART:
+sonar-project.properties
+
+
+
+sonar.projectKey=your_project_key
+sonar.projectName=Your Project Name
+sonar.sources=lib
+sonar.tests=test
+sonar.dart.tests.reportPaths=build/test_results.xml
+
+
+
+
+
+
+
+
+
+
