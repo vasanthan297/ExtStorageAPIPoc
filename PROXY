@@ -1,1 +1,18 @@
 JAVA_TOOL_OPTIONS: '-Dhttps.proxyHost=myProxyUrl -Dhttps.proxyPort=myProxyPort -Dhttp.proxyHost=myProxyUrl -Dhttp.proxyPort=myProxyPort “-Dhttps.nonProxyHosts=localhost|.mydomain" "-Dhttp.nonProxyHosts=localhost|.mydomain” 
+
+
+
+
+
+- script: |
+      echo "##vso[task.setvariable variable=JAVA_TOOL_OPTIONS]-Dhttp.proxyHost=$(HTTP_PROXY_HOST) -Dhttp.proxyPort=$(HTTP_PROXY_PORT)"
+    displayName: 'Set HTTP Proxy for Java'
+
+  - script: |
+      # Your build and test commands here
+    displayName: 'Build and Test'
+
+
+
+
+
