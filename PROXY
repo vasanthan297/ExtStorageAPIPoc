@@ -1,0 +1,1 @@
+JAVA_TOOL_OPTIONS: '-Dhttps.proxyHost=myProxyUrl -Dhttps.proxyPort=myProxyPort -Dhttp.proxyHost=myProxyUrl -Dhttp.proxyPort=myProxyPort “-Dhttps.nonProxyHosts=localhost|.mydomain" "-Dhttp.nonProxyHosts=localhost|.mydomain” 
