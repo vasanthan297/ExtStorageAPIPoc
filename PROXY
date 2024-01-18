@@ -16,3 +16,20 @@ JAVA_TOOL_OPTIONS: '-Dhttps.proxyHost=myProxyUrl -Dhttps.proxyPort=myProxyPort -
 
 
 
+import requests
+
+url = 'https://lab.com'
+headers = {
+    'Accept': 'application/json',
+    'Authorization': 'Bearer 1212121'
+}
+
+data = '{"query": "{auto {assessment(ref: \\"aaa\\"){analysis {status errorCode}}}"}'
+
+response = requests.post(url, headers=headers, data=data)
+
+# Print the response
+print(response.text)
+
+
+
