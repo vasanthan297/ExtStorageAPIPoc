@@ -71,6 +71,9 @@ sonar.dart.tests.reportPaths=build/test_results.xml
 
 
 
+sonar.coverageReportPaths
+sonar.cs.vstest.reportsPaths
+
 
 
 
