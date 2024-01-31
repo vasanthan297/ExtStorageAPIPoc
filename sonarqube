@@ -76,5 +76,5 @@ sonar.cs.vstest.reportsPaths
 
 
 
-
+ - script: echo "My variable value is ${{ dependencies.Job1.outputs['SetVariableStep.MyVariable'] }}"
 
