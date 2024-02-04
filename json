@@ -1,59 +1,61 @@
 import * as fs from 'fs';
 
-const filePath = 'test.json';
+interface Summary {
+  critical: number;
+  high: number;
+}
 
-// Read the existing JSON file
-fs.readFile(filePath, 'utf8', (err, data) => {
-    if (err) {
-        console.error('Error reading the file:', err);
-        return;
-    }
+interface Finding {
+  issue: string;
+  id: number;
+}
 
-    try {
-        // Parse JSON content into a JavaScript object
-        const jsonData = JSON.parse(data);
+interface MyJson {
+  summary: Summary;
+  findings: Finding[];
+}
 
-        // Add the new property to the object
-        jsonData.projectname = 'abc123';
+class MyJsonData implements MyJson {
+  summary: Summary;
+  findings: Finding[];
 
-        // Convert the object back to JSON
-        const updatedJson = JSON.stringify(jsonData, null, 2);
-
-        // Write the updated JSON content back to the file
-        fs.writeFile(filePath, updatedJson, 'utf8', (err) => {
-            if (err) {
-                console.error('Error writing to the file:', err);
-                return;
-            }
-
-            console.log('File updated successfully.');
-        });
-    } catch (jsonError) {
-        console.error('Error parsing JSON:', jsonError);
-    }
-});
-
-
-
-
-
----------------------------------
-
-
-{
-  "name": "your-project-name",
-  "version": "1.0.0",
-  "description": "Your project description",
-  "main": "index.js",
-  "scripts": {
-    "start": "node dist/index.js",
-    "build": "tsc",
-    "watch": "tsc -w"
-  },
-  "author": "Your Name",
-  "license": "MIT",
-  "devDependencies": {
-    "@types/node": "^16.0.0",
-    "typescript": "^4.0.0"
+  constructor(critical: number, high: number, issueData: Finding[]) {
+    this.summary = { critical, high };
+    this.findings = issueData;
   }
 }
+
+// Set dynamic values
+const criticalValue = 5;
+const highValue = 5;
+
+// Function to generate an array of Finding
+function generateIssueData(numberOfIssues: number): Finding[] {
+  const issueData: Finding[] = [];
+
+  for (let i = 1; i <= numberOfIssues; i++) {
+    issueData.push({
+      issue: `Testing${i}`,
+      id: Math.floor(Math.random() * 1000) // Generate a random id as an example
+    });
+  }
+
+  return issueData;
+}
+
+// Set the number of issues you want
+const numberOfIssues = 2;
+
+// Generate issueData dynamically
+const issueData = generateIssueData(numberOfIssues);
+
+// Create an instance of the class
+const jsonData = new MyJsonData(criticalValue, highValue, issueData);
+
+// Convert to JSON string with indentation
+const jsonString = JSON.stringify(jsonData, null, 2);
+
+// Write to a file
+fs.writeFileSync('output.json', jsonString);
+
+console.log('JSON file generated successfully.');
