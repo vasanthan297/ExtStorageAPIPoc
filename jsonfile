@@ -1,0 +1,15 @@
+  - script: |
+        json_file="file.json"
+        imagename=$(jq -r '.imagename' "$json_file")
+        echo "Image Name: $imagename"
+  - script: |
+        for json_file in *.json; do
+          # Check if the file exists and is a regular file
+          if [ -f "$json_file" ]; then
+            # Use jq to extract the value of "imagename" from each JSON file
+            imagename=$(jq -r '.imagename' "$json_file")
+
+            # Print the imagename along with the filename
+            echo "File: $json_file, Image Name: $imagename"
+          fi
+        done
