@@ -13,3 +13,11 @@
             echo "File: $json_file, Image Name: $imagename"
           fi
         done
+
+
+    if [ ! -z "$imagename" ]; then
+      # Print the imagename along with the filename
+      echo "File: $json_file, Image Name: $imagename"
+    else
+      echo "File: $json_file, Image Name is null."
+    fi
