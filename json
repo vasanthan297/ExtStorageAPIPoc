@@ -59,3 +59,62 @@ const jsonString = JSON.stringify(jsonData, null, 2);
 fs.writeFileSync('output.json', jsonString);
 
 console.log('JSON file generated successfully.');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+const fs = require('fs');
+const jsonFilePath = 'path/to/your/file.json';
+const jsonData = {
+    "APP_CI_ID": "555",
+    "VPT_orchestration": [
+        {
+            "CVE_ID": "CVE_2023",
+            "CVE_SCORE": 9
+        },
+        {
+            "CVE_ID": "CVE_2023",
+            "CVE_SCORE": 9
+        }
+    ]
+};
+// Update the data structure
+jsonData.VPT_orchestration = jsonData.VPT_orchestration.map(entry => {
+    // Add a new field 'CVE_FINAL_SCORE' under 'CVE_SCORE'
+    entry.CVE_SCORE = {
+        ...entry.CVE_SCORE,
+        CVE_FINAL_SCORE: /* Your desired value for CVE_FINAL_SCORE */
+    };
+
+    return entry;
+});
+// Write the updated JSON back to the file
+fs.writeFileSync(jsonFilePath, JSON.stringify(jsonData, null, 2));
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
