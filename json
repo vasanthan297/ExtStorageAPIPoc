@@ -82,39 +82,41 @@ console.log('JSON file generated successfully.');
 
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------
-const fs = require('fs');
-const jsonFilePath = 'path/to/your/file.json';
-const jsonData = {
-    "APP_CI_ID": "555",
-    "VPT_orchestration": [
-        {
-            "CVE_ID": "CVE_2023",
-            "CVE_SCORE": 9
-        },
-        {
-            "CVE_ID": "CVE_2023",
-            "CVE_SCORE": 9
-        }
-    ]
+interface Orchestration {
+  CVE_ID: string;
+  CVE_SCORE: number;
+  CVE_FINAL_SCORE?: number; // Optional field for CVE_FINAL_SCORE
+}
+
+interface JsonData {
+  APP_CI_ID: string;
+  VPT_orchestration: Orchestration[];
+}
+
+const jsonData: JsonData = {
+  APP_CI_ID: "555",
+  VPT_orchestration: [
+    {
+      CVE_ID: "CVE_2023",
+      CVE_SCORE: 9
+    },
+    {
+      CVE_ID: "CVE_2023",
+      CVE_SCORE: 9
+    }
+  ]
 };
-// Update the data structure
-jsonData.VPT_orchestration = jsonData.VPT_orchestration.map(entry => {
-    // Add a new field 'CVE_FINAL_SCORE' under 'CVE_SCORE'
-    entry.CVE_SCORE = {
-        ...entry.CVE_SCORE,
-        CVE_FINAL_SCORE: /* Your desired value for CVE_FINAL_SCORE */
-    };
 
-    return entry;
-});
-// Write the updated JSON back to the file
-fs.writeFileSync(jsonFilePath, JSON.stringify(jsonData, null, 2));
+// Function to add CVE_FINAL_SCORE under CVE_SCORE
+const addFinalScore = (orchestration: Orchestration[]): void => {
+  orchestration.forEach(cve => {
+    // Your logic to calculate the CVE_FINAL_SCORE goes here
+    // For example, you can copy the CVE_SCORE value to CVE_FINAL_SCORE
+    cve.CVE_FINAL_SCORE = cve.CVE_SCORE;
+  });
+};
 
+// Add CVE_FINAL_SCORE field under CVE_SCORE
+addFinalScore(jsonData.VPT_orchestration);
 
---------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-
-
-
-
+console.log(JSON.stringify(jsonData, null, 2));
