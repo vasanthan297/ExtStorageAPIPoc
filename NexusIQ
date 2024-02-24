@@ -1,3 +1,20 @@
 https://help.sonatype.com/en/component-remediation-rest-api.html
 https://help.sonatype.com/en/policy-violation-rest-api.html
 https://help.sonatype.com/en/policy-violation-rest-api.html
+
+
+import requests
+
+url = 'http://localhost:8070/api/v2/policyViolations?p=6984017845c645b0ad0c95401ad4f17d'
+username = 'admin'
+password = 'admin123'
+
+response = requests.get(url, auth=(username, password))
+
+if response.status_code == 200:
+    # The request was successful, and you can work with the response content
+    print(response.json())
+else:
+    # Handle any errors that occurred during the request
+    print(f"Error: {response.status_code} - {response.text}")
+
