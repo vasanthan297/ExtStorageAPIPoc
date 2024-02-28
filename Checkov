@@ -1,0 +1,38 @@
+- task: PythonScript@0
+  inputs:
+    scriptSource: 'inline'
+    script: |
+      import json
+      
+      def update_json_file(file_path, failed_count, passed_count, skipped_count):
+          # Check if the file already exists
+          try:
+              with open(file_path, 'r') as file:
+                  existing_data = json.load(file)
+          except FileNotFoundError:
+              existing_data = None
+      
+          # If the file doesn't exist or is empty, create it with the default JSON data
+          if existing_data is None or not existing_data:
+              new_data = {
+                  "summary": {
+                      "failedCount": failed_count,
+                      "passedCount": passed_count,
+                      "skippedCount": skipped_count
+                  },
+                  "findings": []
+              }
+          else:
+              # If the file exists, update the values
+              existing_data["summary"]["failedCount"] = failed_count
+              existing_data["summary"]["passedCount"] = passed_count
+              existing_data["summary"]["skippedCount"] = skipped_count
+              new_data = existing_data
+      
+          # Write the updated or new data to the file
+          with open(file_path, 'w') as file:
+              json.dump(new_data, file, indent=2)
+          print(f"File '{file_path}' updated successfully.")
+      
+      # Example usage
+      update_json_file("your_file.json", 1, 1, 1)
