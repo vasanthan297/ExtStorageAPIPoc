@@ -1,0 +1,25 @@
+npm install ts-node typescript @types/node @types/toml
+
+
+const fs = require('fs');
+const toml = require('toml');
+
+// Read the TOML file
+fs.readFile('data.toml', 'utf8', (err, tomlData) => {
+  if (err) {
+    console.error('Error reading TOML file:', err);
+    return;
+  }
+
+  // Parse the TOML data
+  const data = toml.parse(tomlData);
+
+  // Convert data to string
+  const dataString = JSON.stringify(data, null, 2);
+
+  // Render the string within a <div> element
+  const html = `<div><pre>${dataString}</pre></div>`;
+
+  // Output the HTML
+  console.log(html);
+});
