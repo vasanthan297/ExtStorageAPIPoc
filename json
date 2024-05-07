@@ -1,122 +1,16 @@
-import * as fs from 'fs';
+const fs = require('fs');
 
-interface Summary {
-  critical: number;
-  high: number;
-}
+// Sample list of data
+const dataList = [
+  { name: 'John', age: 30, city: 'New York' },
+  { name: 'Alice', age: 25, city: 'Los Angeles' },
+  { name: 'Bob', age: 35, city: 'Chicago' }
+];
 
-interface Finding {
-  issue: string;
-  id: number;
-}
+// Convert data to CSV format
+const csvContent = dataList.map(item => `${item.name},${item.age},${item.city}`).join('\n');
 
-interface MyJson {
-  summary: Summary;
-  findings: Finding[];
-}
+// Write CSV content to a file
+fs.writeFileSync('output.csv', csvContent, 'utf-8');
 
-class MyJsonData implements MyJson {
-  summary: Summary;
-  findings: Finding[];
-
-  constructor(critical: number, high: number, issueData: Finding[]) {
-    this.summary = { critical, high };
-    this.findings = issueData;
-  }
-}
-
-// Set dynamic values
-const criticalValue = 5;
-const highValue = 5;
-
-// Function to generate an array of Finding
-function generateIssueData(numberOfIssues: number): Finding[] {
-  const issueData: Finding[] = [];
-
-  for (let i = 1; i <= numberOfIssues; i++) {
-    issueData.push({
-      issue: `Testing${i}`,
-      id: Math.floor(Math.random() * 1000) // Generate a random id as an example
-    });
-  }
-
-  return issueData;
-}
-
-// Set the number of issues you want
-const numberOfIssues = 2;
-
-// Generate issueData dynamically
-const issueData = generateIssueData(numberOfIssues);
-
-// Create an instance of the class
-const jsonData = new MyJsonData(criticalValue, highValue, issueData);
-
-// Convert to JSON string with indentation
-const jsonString = JSON.stringify(jsonData, null, 2);
-
-// Write to a file
-fs.writeFileSync('output.json', jsonString);
-
-console.log('JSON file generated successfully.');
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
------------------------------------------------------------------------------------------------------------------------------------------------------------------
-interface Orchestration {
-  CVE_ID: string;
-  CVE_SCORE: number;
-  CVE_FINAL_SCORE?: number; // Optional field for CVE_FINAL_SCORE
-}
-
-interface JsonData {
-  APP_CI_ID: string;
-  VPT_orchestration: Orchestration[];
-}
-
-const jsonData: JsonData = {
-  APP_CI_ID: "555",
-  VPT_orchestration: [
-    {
-      CVE_ID: "CVE_2023",
-      CVE_SCORE: 9
-    },
-    {
-      CVE_ID: "CVE_2023",
-      CVE_SCORE: 9
-    }
-  ]
-};
-
-// Function to add CVE_FINAL_SCORE under CVE_SCORE
-const addFinalScore = (orchestration: Orchestration[]): void => {
-  orchestration.forEach(cve => {
-    // Your logic to calculate the CVE_FINAL_SCORE goes here
-    // For example, you can copy the CVE_SCORE value to CVE_FINAL_SCORE
-    cve.CVE_FINAL_SCORE = cve.CVE_SCORE;
-  });
-};
-
-// Add CVE_FINAL_SCORE field under CVE_SCORE
-addFinalScore(jsonData.VPT_orchestration);
-
-console.log(JSON.stringify(jsonData, null, 2));
+console.log('CSV file has been created!');
