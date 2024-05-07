@@ -14,3 +14,25 @@ const csvContent = dataList.map(item => `${item.name},${item.age},${item.city}`)
 fs.writeFileSync('output.csv', csvContent, 'utf-8');
 
 console.log('CSV file has been created!');
+
+
+
+const fs = require('fs');
+
+// Sample list of data
+const dataList = [
+  { name: 'John', age: 30, city: 'New York' },
+  { name: 'Alice', age: 25, city: 'Los Angeles' },
+  { name: 'Bob', age: 35, city: 'Chicago' }
+];
+
+// Define header row
+const header = 'Name,Age,City';
+
+// Convert data to CSV format
+const csvContent = `${header}\n${dataList.map(item => `${item.name},${item.age},${item.city}`).join('\n')}`;
+
+// Write CSV content to a file
+fs.writeFileSync('output.csv', csvContent, 'utf-8');
+
+console.log('CSV file has been created!');
