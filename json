@@ -1,3 +1,5 @@
+api/qualitygates/project_status?projectKey=project-x&branch=staging
+
 const fs = require('fs');
 
 // Sample list of data
