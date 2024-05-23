@@ -21,3 +21,65 @@ fs.readFile('your_json_file.json', 'utf8', (err, data) => {
         console.error('Error parsing JSON:', err);
     }
 });
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+function generate_html_table(cloc_data, project, repo, branch, build_id) {
+    let html = `<!DOCTYPE html>
+    <html>
+    <head>
+    <title>Repo Deck Dash - ${project} - ${repo} - ${branch} - Build ID: ${build_id}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f2f2f2;
+        }
+        td:first-child {
+            font-weight: bold;
+        }
+    </style>
+    </head>
+    <body>
+    <h1>Repo Deck Dash - ${project} - ${repo} - ${branch} - Build ID: ${build_id}</h1>
+    <table>
+    <tr><th>Language</th><th>Code</th><th>Comments</th><th>Blank</th><th>Total</th><th>Files</th></tr>`;
+
+    for (const [lang, stats] of Object.entries(cloc_data)) {
+        if (lang !== "SUM") { // Exclude the "SUM" section
+            html += `<tr><td>${lang}</td><td>${stats.code || 0}</td><td>${stats.comment || 0}</td><td>${stats.blank || 0}</td><td>${(stats.code || 0) + (stats.comment || 0) + (stats.blank || 0)}</td><td>${stats.nFiles || 0}</td></tr>`;
+        }
+    }
+
+    html += `</table>
+    </body>
+    </html>`;
+    return html;
+}
