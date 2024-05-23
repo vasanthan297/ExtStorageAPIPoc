@@ -1,3 +1,22 @@
+#!/bin/bash
+
+# String to search
+string="This is a string containing **/*.java pattern"
+
+# Check if either pattern is found in the string
+if grep -q -E '**/\*\.java|**/\*\*\*/\*.*' <<< "$string"; then
+    echo "Pattern found in the string"
+else
+    echo "Pattern not found in the string"
+fi
+
+
+
+
+
+
+
+
 https://oksala.net/2019/03/21/remove-link-between-work-items-with-azure-devops-api/
 
 
