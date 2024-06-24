@@ -1,80 +1,49 @@
-trigger:
-  - main
+const request = require('request');
 
-pool:
-  vmImage: 'windows-latest'
+// Configuration
+const SONARQUBE_SERVER = 'http://your-sonarqube-server';
+const USERNAME = 'your_username';
+const PASSWORD = 'your_password';
+const PAGE_SIZE = 100; // Number of issues per page
 
-steps:
-  - task: UseJavaVersion@0
-    inputs:
-      version: '8'  # Use the appropriate Java version here
+// Function to fetch vulnerabilities
+function fetchVulnerabilities(page = 1) {
+  const options = {
+    url: `${SONARQUBE_SERVER}/api/issues/search`,
+    auth: {
+      user: USERNAME,
+      pass: PASSWORD
+    },
+    qs: {
+      types: 'VULNERABILITY',
+      pageSize: PAGE_SIZE,
+      page: page
+    },
+    json: true
+  };
 
-  - task: SonarQubePrepare@4
-    inputs:
-      SonarQube: 'SonarQube'  # Name of the SonarQube service connection in Azure DevOps
-      scannerMode: 'MSBuild'
-      projectKey: 'YourProjectKey'
-      projectName: 'YourProjectName'
-      projectVersion: '$(Build.BuildNumber)'
-      extraProperties: |
-        sonar.java.binaries=$(build.sourcesDirectory)/path/to/compiled/code
-        sonar.java.test.binaries=$(build.sourcesDirectory)/path/to/compiled/tests
-        sonar.java.libraryPaths=$(build.sourcesDirectory)/path/to/libraries
-        sonar.java.test.libraries=$(build.sourcesDirectory)/path/to/test/libraries
-        sonar.java.source=1.8  # Java version
-        sonar.ssl.clientAuth=true
-        sonar.ssl.clientCert.passphrase=your_certificate_password
-        sonar.ssl.clientCert.path=$(Agent.TempDirectory)/your_cert.jks  # Path to the JKS certificate
-        sonar.web.ssl.clientAuth: false
-    env:
-      SONARQUBE_SCANNER_PARAMS: $(extraProperties)
+  request(options, (error, response, body) => {
+    if (error) {
+      console.error('Error fetching vulnerabilities:', error);
+      return;
+    }
 
-  - script: 'msbuild /t:Rebuild'
-    workingDirectory: '$(build.sourcesDirectory)'
+    const issues = body.issues;
+    const total = body.total;
 
-  - task: SonarQubeAnalyze@4
+    console.log(`Page ${page}: Retrieved ${issues.length} issues out of ${total} total vulnerabilities.`);
 
-  - task: SonarQubePublish@4
-    inputs:
-      pollingTimeoutSec: '300'
+    // Process the issues
+    issues.forEach(issue => {
+      console.log(`Issue Key: ${issue.key}, Severity: ${issue.severity}, Message: ${issue.message}`);
+    });
 
+    // Fetch next page if there are more issues
+    if (page * PAGE_SIZE < total) {
+      fetchVulnerabilities(page + 1);
+    }
+  });
+}
 
-
-
-https://www.mattgerega.com/2023/01/04/publishing-code-coverage-in-both-azure-devops-and-sonarqube/
-
-https://lakshaykaushik2506.medium.com/rendering-code-coverage-report-on-sonarqube-and-azure-devops-4942ece4dda6
-
-
-
-set -o pipefail && xcodebuild test -workspace YourWorkspace.xcworkspace -scheme YourScheme -destination 'platform=iOS Simulator,name=iPhone 12' -enableCodeCoverage YES | xcpretty -r junit --output test-reports/junit.xml
-
-
-
-
-
-
-
-DART:
-sonar-project.properties
-
-
-
-sonar.projectKey=your_project_key
-sonar.projectName=Your Project Name
-sonar.sources=lib
-sonar.tests=test
-sonar.dart.tests.reportPaths=build/test_results.xml
-
-
-
-
-
-
-sonar.coverageReportPaths
-sonar.cs.vstest.reportsPaths
-
-
-
- - script: echo "My variable value is ${{ dependencies.Job1.outputs['SetVariableStep.MyVariable'] }}"
-
+// Start fetching vulnerabilities
+fetchVulnerabilities();
