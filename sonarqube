@@ -47,3 +47,29 @@ function fetchVulnerabilities(page = 1) {
 
 // Start fetching vulnerabilities
 fetchVulnerabilities();
+
+
+
+
+
+// Define an asynchronous function
+async function asyncFunction() {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      console.log('Async function completed.');
+      resolve('Result from async function');
+    }, 2000); // Simulate an async operation with setTimeout
+  });
+}
+
+// Define another async function to call the first one and wait for it
+async function main() {
+  console.log('Before calling asyncFunction');
+  const result = await asyncFunction(); // Wait for asyncFunction to complete
+  console.log(result); // Output the result from asyncFunction
+  console.log('After calling asyncFunction');
+}
+
+// Call the main function
+main();
+
