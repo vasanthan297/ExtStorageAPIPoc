@@ -78,3 +78,7 @@ main();
 https://sonar-jenkins.blogspot.com/2012/12/jacoco-code-coverage-with-ant-sonar.html
 
 
+$(System.PullRequest.SourceCommitId)
+
+
+
