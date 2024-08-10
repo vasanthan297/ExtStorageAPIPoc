@@ -1,0 +1,96 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- script: echo Hello, world!
+  displayName: 'Run a one-line script'
+
+- task: PythonScript@0
+  inputs:
+    scriptSource: 'inline'
+    script: |
+        import requests
+        import base64
+        import json
+
+        # Azure DevOps personal access token and organization URL
+        personal_access_token = ''
+        organization = ''
+        project = ''
+        team = '1001'  # Specify the team if applicable
+
+        # Encode the PAT as a Base64 string
+        auth_str = f':{personal_access_token}'
+        base64_auth_str = base64.b64encode(auth_str.encode('utf-8')).decode('utf-8')
+
+        # Construct the Authorization header
+        headers = {
+            'Authorization': f'Basic {base64_auth_str}',
+            'Content-Type': 'application/json'
+        }
+
+        # Base URL for Azure DevOps REST API
+        base_url = f'https://dev.azure.com/{organization}/{project}/{team}/_apis/dashboard/dashboards?api-version=7.1-preview.3'
+
+        # Dashboard configuration as provided
+        dashboard_config = {
+            "name": "test",
+            "description": "",
+            "refreshInterval": 0,
+            "position": 2,
+            "widgets": [
+                {
+                    "name": "dashboardquery by Assigned To",
+                    "position": {
+                        "row": 1,
+                        "column": 1
+                    },
+                    "size": {
+                        "rowSpan": 2,
+                        "columnSpan": 2
+                    },
+                    "settings": "{\"scope\":\"WorkitemTracking.Queries\",\"groupKey\":\"4f434b9d-1c9c-4f14-968d-6087e866d8df\",\"title\":\"dashboardquery by Assigned To\",\"chartType\":\"PieChart\",\"transformOptions\":{\"filter\":\"4f434b9d-1c9c-4f14-968d-6087e866d8df\",\"groupBy\":\"System.AssignedTo\",\"orderBy\":{\"direction\":\"descending\",\"propertyName\":\"value\"},\"measure\":{\"aggregation\":\"count\",\"propertyName\":\"\"},\"historyRange\":null,\"groupByTags\":false},\"userColors\":[],\"lastArtifactName\":\"dashboardquery by Assigned To\"}",
+                    "settingsVersion": {
+                        "major": 3,
+                        "minor": 0,
+                        "patch": 0
+                    },
+                    "contributionId": "ms.vss-dashboards-web.Microsoft.VisualStudioOnline.Dashboards.WitChartWidget",
+                    "typeId": "Microsoft.VisualStudioOnline.Dashboards.WitChartWidget",
+                    "configurationContributionId": "ms.vss-dashboards-web.Microsoft.VisualStudioOnline.Dashboards.WitChartWidget.Configuration",
+                    "configurationContributionRelativeId": "Microsoft.VisualStudioOnline.Dashboards.WitChartWidget.Configuration",
+                    "isNameConfigurable": True,
+                    "loadingImageUrl": "https://dev.azure.com/vasanthan2971/_static/Widgets/ChartLoading.png",
+                    "lightboxOptions": {
+                        "width": 900,
+                        "height": 700,
+                        "resizable": True
+                    }
+                }
+            ],
+            "dashboardScope": "project_Team"
+        }
+
+        # Making the POST request to create the dashboard
+        response = requests.post(
+            base_url,
+            headers=headers,
+            data=json.dumps(dashboard_config)
+        )
+
+        # Check the response
+        if response.status_code in [200, 201]:
+            print("Dashboard created successfully!")
+            print("Response:", response.json())
+        else:
+            print(f"Failed to create dashboard. Status code: {response.status_code}")
+            print("Response:", response.text)  # Print the text to debug further
+    
