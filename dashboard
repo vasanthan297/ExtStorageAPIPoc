@@ -1,3 +1,13 @@
+GET query
+GET https://dev.azure.com/fabrikam/Fabrikam-Fiber-Git/_apis/wit/queries/{query}?$expand=clauses&api-version=7.1-preview.2
+https://learn.microsoft.com/en-us/rest/api/azure/devops/wit/queries/get?view=azure-devops-rest-7.1&tabs=HTTP
+
+
+
+
+
+
+
 import requests
 from requests.auth import HTTPBasicAuth
 import json
