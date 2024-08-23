@@ -1,0 +1,31 @@
+const request = require('request-promise');
+const fs = require('fs');
+const FormData = require('form-data');
+
+const upload = async ({ emmAPI, apiKey, platform, externalId, subgroupIds, filePath, proxyUrl }) => {
+    const form = new FormData();
+    form.append("key", apiKey);
+    form.append("platform", platform);
+    form.append("externalId", externalId || "");
+    form.append("subgroupIds", subgroupIds || "");
+    form.append("app", fs.createReadStream(filePath));
+
+    const formHeaders = form.getHeaders();
+
+    try {
+        const response = await request.post({
+            url: `${emmAPI}/submit`,
+            body: form,
+            headers: formHeaders,
+            encoding: null, // Ensure the response is returned as a Buffer
+            proxy: proxyUrl, // Add the proxy URL here
+        });
+
+        const data = JSON.parse(response); // Parse the response data if it's JSON
+        console.log("App uuid: " + data.uuid);
+        return data.uuid;
+    } catch (error) {
+        console.error("Upload failed:", error.message);
+        throw error;
+    }
+};
