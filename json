@@ -1,40 +1,46 @@
-api/qualitygates/project_status?projectKey=project-x&branch=staging
+{
+    "database": {
+        "host": "{DB_HOST}",
+        "port": "{DB_PORT}",
+        "username": "{DB_USER}",
+        "password": "{DB_PASS}"
+    },
+  "api_key": {
+	   "grkey":  "{API_KEY}",
+	   "name" : "{DB_HOST}"
+    }	
 
-const fs = require('fs');
-
-// Sample list of data
-const dataList = [
-  { name: 'John', age: 30, city: 'New York' },
-  { name: 'Alice', age: 25, city: 'Los Angeles' },
-  { name: 'Bob', age: 35, city: 'Chicago' }
-];
-
-// Convert data to CSV format
-const csvContent = dataList.map(item => `${item.name},${item.age},${item.city}`).join('\n');
-
-// Write CSV content to a file
-fs.writeFileSync('output.csv', csvContent, 'utf-8');
-
-console.log('CSV file has been created!');
+}
 
 
 
-const fs = require('fs');
 
-// Sample list of data
-const dataList = [
-  { name: 'John', age: 30, city: 'New York' },
-  { name: 'Alice', age: 25, city: 'Los Angeles' },
-  { name: 'Bob', age: 35, city: 'Chicago' }
-];
+import json
+import re
 
-// Define header row
-const header = 'Name,Age,City';
+# Load the JSON file as a string
+with open('config.json', 'r') as file:
+    config_str = file.read()
 
-// Convert data to CSV format
-const csvContent = `${header}\n${dataList.map(item => `${item.name},${item.age},${item.city}`).join('\n')}`;
+# Define the values for the parameters
+parameters = {
+    "DB_HOST": "localhost",
+    "DB_PORT": 5432,
+    "DB_USER": "admin",
+    "DB_PASS": "secret",
+    "API_KEY": "myapikey"
+}
 
-// Write CSV content to a file
-fs.writeFileSync('output.csv', csvContent, 'utf-8');
+# Replace the placeholders using a regular expression
+for key, value in parameters.items():
+    config_str = re.sub(rf"\{{{key}\}}", str(value), config_str)
 
-console.log('CSV file has been created!');
+# Convert the string back to a dictionary
+config = json.loads(config_str)
+
+# Use the updated config dictionary
+print(config)
+
+# Optionally, save the updated config back to a JSON file
+with open('updated_config.json', 'w') as file:
+    json.dump(config, file, indent=4)
