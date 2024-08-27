@@ -150,3 +150,95 @@ else:
     
 
 
+
+
+
+
+===================================================================================================================================
+
+https://learn.microsoft.com/en-us/rest/api/azure/devops/dashboard/dashboards/list?view=azure-devops-rest-7.1&tabs=HTTP
+
+import requests
+import base64
+import json
+
+# Replace with your organization URL, project name, team ID, and PAT
+organization_url = 'https://dev.azure.com/YOUR_ORG'
+project_name = 'YOUR_PROJECT_NAME'
+team_id = 'YOUR_TEAM_ID'
+personal_access_token = 'YOUR_PAT'
+
+# Encode the PAT for basic authentication
+authorization = base64.b64encode(f":{personal_access_token}".encode()).decode()
+
+headers = {
+    'Content-Type': 'application/json',
+    'Authorization': f'Basic {authorization}'
+}
+
+# Construct the URL for the default dashboard
+default_dashboard_url = f'{organization_url}/{project_name}/_apis/dashboard/dashboards?teamId={team_id}&api-version=7.1-preview.1'
+
+# Make the API request
+response = requests.get(default_dashboard_url, headers=headers)
+
+# Check the response
+if response.status_code == 200:
+    dashboard = response.json()
+    print(json.dumps(dashboard, indent=4))
+else:
+    print(f"Failed to retrieve dashboard: {response.status_code}")
+    print(response.text)
+
+
+
+=======================================================================================================================================================
+Create a widge to existing dashboard name:
+import requests
+import base64
+import json
+
+# Replace with your organization URL and PAT
+organization_url = 'https://dev.azure.com/YOUR_ORG'
+project_name = 'YOUR_PROJECT_NAME'
+team_name = 'YOUR_TEAM_NAME'
+dashboard_id = 'YOUR_DASHBOARD_ID'
+personal_access_token = 'YOUR_PAT'
+
+# Encode the PAT for basic authentication
+authorization = base64.b64encode(f":{personal_access_token}".encode()).decode()
+
+headers = {
+    'Content-Type': 'application/json',
+    'Authorization': f'Basic {authorization}'
+}
+
+# Define the widget configuration
+widget = {
+    "name": "Sample Markdown Widget",
+    "position": {"column": 0, "row": 0},
+    "size": {"rowSpan": 2, "columnSpan": 2},
+    "settings": {
+        "markdown": "### This is a sample widget"
+    },
+    "contributionId": "ms.vss-dashboards-web.Microsoft.VisualStudioOnline.MarkdownWidget"
+}
+
+# URL to add the widget to the dashboard
+add_widget_url = f'{organization_url}/{project_name}/{team_name}/_apis/dashboard/dashboards/{dashboard_id}/widgets?api-version=7.1-preview.1'
+
+# Make the POST request to add the widget
+response = requests.post(add_widget_url, headers=headers, data=json.dumps(widget))
+
+# Check the response
+if response.status_code == 200:
+    print("Widget added successfully!")
+    print(json.dumps(response.json(), indent=4))
+else:
+    print(f"Failed to add widget: {response.status_code}")
+    print(response.text)
+
+
+
+
+
