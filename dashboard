@@ -240,5 +240,6 @@ else:
 
 
 
+https://learn.microsoft.com/en-us/rest/api/azure/devops/dashboard/widgets/update-widgets?view=azure-devops-rest-7.1&tabs=HTTP
 
-
+https://learn.microsoft.com/en-us/rest/api/azure/devops/dashboard/widgets/replace-widgets?view=azure-devops-rest-7.1&tabs=HTTP
