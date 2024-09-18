@@ -1,3 +1,26 @@
+
+const request = require('request');
+
+request({
+  url: 'https://example.com',
+  method: 'GET',
+  strictSSL: false, // Disable SSL certificate validation
+  rejectUnauthorized: false // Ignore the local issuer certificate issue
+}, function (error, response, body) {
+  if (!error && response.statusCode === 200) {
+    console.log(body);
+  } else {
+    console.error('Error:', error);
+  }
+});
+
+
+
+
+
+
+
+
 const request = require('request-promise');
 const fs = require('fs');
 const FormData = require('form-data');
