@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# Example string
+input="uid=1001(tevops) gid=1000(tevops) groups=1000(tevops)"
+
+# Extract UID
+uid=$(echo "$input" | sed -n 's/uid=\([0-9]\+\).*/\1/p')
+
+echo "Extracted UID: $uid"
