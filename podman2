@@ -7,3 +7,9 @@ input="uid=1001(tevops) gid=1000(tevops) groups=1000(tevops)"
 uid=$(echo "$input" | sed -n 's/uid=\([0-9]\+\).*/\1/p')
 
 echo "Extracted UID: $uid"
+
+function containsOnlyDigits(str) {
+  return !isNaN(str) && str.trim() !== '';
+}
+
+
