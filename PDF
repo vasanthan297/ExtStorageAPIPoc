@@ -1,41 +1,30 @@
-const request = require('request');
 const fs = require('fs');
-const https = require('https');
+const request = require('request');
 
-// HTTPS Agent
-const agentOptions = {
-  // Add any necessary agent options (like certificates, etc.) here.
-};
-const agent = new https.Agent(agentOptions);
-
-// Function to download the file asynchronously
-function downloadFile(url, filePath) {
+function downloadPDF() {
   return new Promise((resolve, reject) => {
-    const file = fs.createWriteStream(filePath);
+    const options = {
+      method: 'GET',
+      url: 'http://google.com/pdf'
+    };
 
-    request
-      .get({
-        url: url,
-        agent: agent
-      })
-      .pipe(file)
+    const fileStream = fs.createWriteStream('report.pdf');
+    
+    request(options)
+      .pipe(fileStream)
       .on('finish', () => {
-        resolve('File downloaded successfully.');
+        resolve('PDF downloaded successfully');
       })
-      .on('error', (err) => {
-        reject('Error downloading file: ' + err);
+      .on('error', (error) => {
+        reject(error);
       });
   });
 }
 
-// Usage with async/await
-async function asyncDownload() {
-  try {
-    const message = await downloadFile('https://example.com/sample.pdf', 'sample.pdf');
+downloadPDF()
+  .then((message) => {
     console.log(message);
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-asyncDownload();
+  })
+  .catch((error) => {
+    console.error('Error downloading PDF:', error);
+  });
