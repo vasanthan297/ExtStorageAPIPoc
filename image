@@ -32,3 +32,41 @@ high = 10
 # Generate the JSON output dynamically based on the list of findings
 json_output = generate_json(critical, high, findings)
 print(json_output)
+
+
+
+
+
+import json
+
+class Finding:
+    def __init__(self, image, cveName, vpt_severity):
+        self.image = image
+        self.cveName = cveName
+        self.vpt_severity = vpt_severity
+
+    def to_dict(self):
+        return {
+            "image": self.image,
+            "cveName": self.cveName,
+            "vpt_severity": self.vpt_severity
+        }
+
+# Create a list of findings
+findings_list = [
+    Finding("image_name_1", "CVE-2024-7264", "High"),
+    Finding("image_name_2", "CVE-2024-7265", "Medium"),
+    # Add more findings as needed
+]
+
+# Prepare the JSON structure
+data = {
+    "findings": [finding.to_dict() for finding in findings_list]
+}
+
+# Write the JSON data to a file
+with open('findings.json', 'w') as json_file:
+    json.dump(data, json_file, indent=4)
+
+print("JSON file created successfully.")
+
