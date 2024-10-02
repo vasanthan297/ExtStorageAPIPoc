@@ -1,0 +1,34 @@
+import json
+
+# Function to generate JSON dynamically with a list of findings
+def generate_json(critical, high, findings):
+    data = {
+        "summary": {
+            "aqua": {
+                "critical": critical,
+                "high": high
+            },
+            "vpt": {
+                "critical": critical,
+                "high": high
+            }
+        },
+        "findings": findings  # Now findings is a list of dictionaries
+    }
+    
+    return json.dumps(data, indent=4)
+
+# Dynamic input: a list of findings
+findings = [
+    {"image": "image_name_1", "cveName": "CVE-2024-1234", "vpt_severity": "High"},
+    {"image": "image_name_2", "cveName": "CVE-2024-5678", "vpt_severity": "Critical"},
+    {"image": "image_name_3", "cveName": "CVE-2024-9101", "vpt_severity": "Medium"}
+]
+
+# Example static values for critical and high counts
+critical = 1
+high = 10
+
+# Generate the JSON output dynamically based on the list of findings
+json_output = generate_json(critical, high, findings)
+print(json_output)
