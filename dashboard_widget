@@ -1,0 +1,37 @@
+import requests
+from requests.auth import HTTPBasicAuth
+
+# Azure DevOps organization details
+organization = "https://dev.azure.com/YourOrganization"
+project = "YourProjectName"
+dashboard_id = "YourDashboardID"
+personal_access_token = "YourPAT"
+
+# API base URL
+base_url = f"{organization}/{project}/_apis/dashboard/dashboards/{dashboard_id}"
+
+# Authenticate with PAT
+auth = HTTPBasicAuth("", personal_access_token)  # Username is blank for PAT
+
+# Step 1: Get all widgets on the dashboard
+get_widgets_url = f"{base_url}?api-version=7.1-preview.2"
+response = requests.get(get_widgets_url, auth=auth)
+
+if response.status_code == 200:
+    widgets = response.json().get("widgets", [])
+    print(f"Found {len(widgets)} widgets.")
+    
+    # Step 2: Iterate through widgets and delete each one
+    for widget in widgets:
+        widget_id = widget["id"]
+        delete_widget_url = f"{base_url}/widgets/{widget_id}?api-version=7.1-preview.2"
+        delete_response = requests.delete(delete_widget_url, auth=auth)
+        
+        if delete_response.status_code == 204:
+            print(f"Deleted widget with ID: {widget_id}")
+        else:
+            print(f"Failed to delete widget with ID: {widget_id}. Status Code: {delete_response.status_code}")
+            print(f"Response: {delete_response.text}")
+else:
+    print(f"Failed to retrieve widgets. Status Code: {response.status_code}")
+    print(f"Response: {response.text}")
