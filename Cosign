@@ -1,0 +1,40 @@
+import subprocess
+import sys
+
+def run_command(command, capture_output=False):
+    """Run a shell command and return the output if requested."""
+    try:
+        result = subprocess.run(command, shell=True, check=True, text=True, capture_output=capture_output)
+        return result.stdout.strip() if capture_output else None
+    except subprocess.CalledProcessError as e:
+        print(f"Error while running command: {command}\nExit code: {e.returncode}\nError: {e.stderr}", file=sys.stderr)
+        sys.exit(e.returncode)
+
+# Replace with actual values
+cosign_login_url = "url"
+username = "username"
+password = "password"
+image = "image_name"  # Replace with the image name
+imagename = "imagename"  # Replace with the image name prefix
+
+# Cosign login
+run_command(f"cosign login {cosign_login_url} -u {username} -p {password}")
+
+# Remove the image
+run_command(f"podman rmi {image}")
+
+# Pull the image
+run_command(f"podman pull {image}")
+
+# Get image digest
+image_digest_command = f"podman image inspect --format '{{{{ .digest }}}}' {image}"
+image_digest = run_command(image_digest_command, capture_output=True)
+
+# Pull the image using its digest
+run_command(f"podman pull {image_digest}")
+
+# Sign the image
+sign_command = f"cosign sign --key hashivault://adocosign {imagename}{image_digest} -y --tlog-upload=false &"
+run_command(sign_command)
+
+print("Script execution completed.")
