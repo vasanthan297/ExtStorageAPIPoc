@@ -23,3 +23,47 @@ with open(output_file, "w") as out_file:
                             out_file.write(row[1] + "\n")  # Write second column to file
 
 print("Extraction completed. Check", output_file)
+
+
+=======================================================================================================================================================================================
+
+
+import os
+import csv
+from collections import defaultdict
+
+# Define the root directory containing folders with CSV files
+root_dir = "path/to/your/folder"  # Change this to your directory path
+
+# Dictionary to hold counts: key = (projectId, language), value = count of repos
+lang_counts = defaultdict(int)
+
+# Walk through all directories and files
+for dirpath, dirnames, filenames in os.walk(root_dir):
+    for filename in filenames:
+        if filename.endswith(".csv"):
+            # Extract projectId from filename (assuming format: projectId_reponame.csv)
+            project_id = filename.split("_")[0]
+            file_path = os.path.join(dirpath, filename)
+            
+            # Set to hold unique languages in the current file (repository)
+            repo_languages = set()
+            
+            # Read the CSV file
+            with open(file_path, "r", newline='', encoding="utf-8") as csvfile:
+                reader = csv.reader(csvfile)
+                for row in reader:
+                    if len(row) > 1:  # Ensure there is a second column
+                        # Extract language and strip any whitespace
+                        lang = row[1].strip()
+                        repo_languages.add(lang)
+            
+            # Increment count for each language found in this repo
+            for lang in repo_languages:
+                lang_counts[(project_id, lang)] += 1
+
+# Print results: language, repo count, projectId
+for (project_id, lang), count in lang_counts.items():
+    print(f"{lang}, {count}, {project_id}")
+
+
