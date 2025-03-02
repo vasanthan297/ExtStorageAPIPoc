@@ -32,3 +32,29 @@ async function main() {
 }
 
 main();
+
+
+---------------------------------------------------------------------------------------------------------
+const fs = require('fs');
+const request = require('request');
+
+function downloadFile(fileUrl, outputPath) {
+  return new Promise((resolve, reject) => {
+    request({
+      url: fileUrl,
+      strictSSL: false,  // Disable strict SSL verification
+      rejectUnauthorized: false,  // Ignore unauthorized SSL certificates
+    })
+      .pipe(fs.createWriteStream(outputPath))
+      .on('finish', () => {
+        console.log('File downloaded successfully.');
+        resolve(outputPath);
+      })
+      .on('error', (err) => {
+        console.error('Error downloading file:', err);
+        reject(err);
+      });
+  });
+}
+
+
