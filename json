@@ -1,3 +1,6 @@
+
+
+
 {
     "database": {
         "host": "{DB_HOST}",
@@ -63,3 +66,21 @@ def csv_to_json(csv_file, json_file):
 # Example usage
 csv_to_json('data.csv', 'data.json')
 
+
+
+
+
+
+
+
+const jsonArray = [
+    { name: "apple" },
+    { name: "banana" },
+    { name: "cherry" }
+];
+
+const searchValue = "banana";
+
+const exists = jsonArray.some(item => item.name === searchValue);
+
+console.log(exists ? "Value found!" : "Value not found!");
