@@ -25,6 +25,28 @@ fs.readFile('your_json_file.json', 'utf8', (err, data) => {
 
 
 
+import csv
+import json
+
+def csv_to_json(csv_file, json_file):
+    data = {}
+    
+    with open(csv_file, mode='r', encoding='utf-8') as file:
+        csv_reader = csv.DictReader(file)
+        for row in csv_reader:
+            key = row['name']  # Use the "name" column as the key
+            data[key] = row  # Store the entire row as the value
+    
+    with open(json_file, mode='w', encoding='utf-8') as file:
+        json.dump(data, file, indent=4)
+
+# Example usage
+csv_to_json('data.csv', 'data.json')
+
+
+
+
+
 
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------
