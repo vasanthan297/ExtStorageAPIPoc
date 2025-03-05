@@ -44,3 +44,22 @@ print(config)
 # Optionally, save the updated config back to a JSON file
 with open('updated_config.json', 'w') as file:
     json.dump(config, file, indent=4)
+
+
+--------------------------------JSON
+
+import csv
+import json
+
+# Read CSV and convert to JSON
+def csv_to_json(csv_file, json_file):
+    with open(csv_file, mode='r', encoding='utf-8') as file:
+        csv_reader = csv.DictReader(file)  # Read CSV as dictionary
+        data = list(csv_reader)  # Convert to list of dictionaries
+    
+    with open(json_file, mode='w', encoding='utf-8') as file:
+        json.dump(data, file, indent=4)  # Write to JSON file with indentation
+
+# Example usage
+csv_to_json('data.csv', 'data.json')
+
