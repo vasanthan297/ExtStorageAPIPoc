@@ -1,18 +1,19 @@
 steps:
   - bash: |
       POOL_NAME="$(Agent.QueueName)"
-      if [[ "$POOL_NAME" == *"sc-mac"* ]]; then
-          echo "##vso[task.setvariable variable=IsMacPool]true"
-          echo "Agent pool contains 'sc-mac'"
+      if [[ "$POOL_NAME" == *"sc-mac"* || "$POOL_NAME" == *"sc-android"* ]]; then
+          echo "##vso[task.setvariable variable=IsMatchingPool]true"
+          echo "Agent pool contains 'sc-mac' or 'sc-android'"
       else
-          echo "##vso[task.setvariable variable=IsMacPool]false"
-          echo "Agent pool does not contain 'sc-mac'"
+          echo "##vso[task.setvariable variable=IsMatchingPool]false"
+          echo "Agent pool does not contain 'sc-mac' or 'sc-android'"
       fi
     displayName: "Check Agent Pool in Bash"
 
-  - script: echo "This runs only if 'sc-mac' is in the pool name"
-    condition: eq(variables['IsMacPool'], 'true')
-    displayName: "Run if Pool is Mac"
+  - script: echo "This runs only if the pool contains 'sc-mac' or 'sc-android'"
+    condition: eq(variables['IsMatchingPool'], 'true')
+    displayName: "Run if Pool is Mac or Android"
+
 
 
 
