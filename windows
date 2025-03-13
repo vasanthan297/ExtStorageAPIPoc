@@ -1,5 +1,16 @@
 Dsonar.findbugs.timeout=1800
 
+branch="ref/head/release/"
+ref_branch="main"
+
+if echo "$branch" | grep -q "$ref_branch"; then
+    echo "Pattern found"
+else
+    echo "Pattern not found"
+fi
+
+
+
 
 - script: |
     # Get image size in bytes
