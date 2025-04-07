@@ -1,3 +1,38 @@
+const fs = require('fs').promises; // Use fs promises for async file operations
+const csv = require('csvtojson');
+
+const csvFilePath = 'data.csv';
+const jsonFilePath = 'data.json';
+
+async function convertCSVtoJSON() {
+  try {
+    const jsonArray = await csv().fromFile(csvFilePath);
+    await fs.writeFile(jsonFilePath, JSON.stringify(jsonArray, null, 2));
+    console.log('CSV successfully converted to JSON!');
+  } catch (error) {
+    console.error('Error during conversion:', error);
+  }
+}
+
+convertCSVtoJSON();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import os
 import csv
 
