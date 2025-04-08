@@ -1,3 +1,27 @@
+// Load the built-in 'fs' module to read the file
+const fs = require('fs');
+
+// Read the JSON file synchronously (can also use async version)
+const rawData = fs.readFileSync('data.json');
+
+// Parse the JSON data
+const jsonData = JSON.parse(rawData);
+
+// Now you can work with jsonData
+console.log(jsonData);
+
+// Example: loop through the array
+jsonData.forEach((item, index) => {
+  console.log(`Item ${index + 1}: Language = ${item.Language}, Category = ${item.Category}`);
+});
+
+
+
+
+
+
+
+
 steps:
   - bash: |
       POOL_NAME="$(Agent.QueueName)"
